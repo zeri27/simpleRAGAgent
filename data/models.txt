@@ -1,0 +1,31 @@
+Step 3A: Foundation Models
+Three state-of-the-art TSFMs are evaluated in this study, selected to represent three distinct architectural
+paradigms: dedicated covariate attention, unified variate flattening, and univariate-only decoding. All
+three are evaluated in a purely zero-shot setting, with no finetuning or task-specific adaptation applied.
+• Amazon Chronos-2 (Ansari et al., 2025): a 120M encoder-only model with a dedicated cross at-
+tention mechanism that natively incorporates covariates within the attention computation, enabling
+zero-shot covariate-aware forecasting.
+• Salesforce Moirai 1.1-R-Base (Woo et al., 2024): a 91M encoder-only model that supports
+arbitrary numbers of variates by flattening all inputs, including covariates and targets, into a single
+sequence before applying self-attention.
+• Google TimesFM 2.5 (Das et al., 2024b): a 200M decoder-only model operating exclusively in
+the univariate setting, evaluated here without covariate support as per its original implementation.
+Step 3B: Baseline Models
+Several conventional models serve as baselines to interpret TSFM performance. All baseline models are
+trained on the training data, in contrast to the TSFMs which operate zero-shot. Model configurations
+are provided for reproducibility and fair comparison.
+• Random Forest (Breiman, 2001): a quantile regression forest with 200 estimators, implemented
+using scikit-learn (Pedregosa et al., 2011). Operates as a pointwise regressor without temporal
+structure, and is therefore evaluated only at a fixed horizon.
+• LSTM (Hochreiter & Schmidhuber, 1997; Ben Aoun et al., 2026): an encoder-decoder recurrent
+network implemented in scikit-learn. A 128-neuron encoder LSTM summarises past observations
+and target values into a context vector, which is concatenated with known future covariates and
+passed to a 128-neuron decoder LSTM with dropout. A time-distributed output layer produces
+three quantiles per forecast step, enabling probabilistic multi-horizon forecasting.
+• TiDE (Das et al., 2024c): a Time-series Dense Encoder implemented using the Darts library
+(Herzen et al., 2022). Configured with 2 encoder and 2 decoder layers, a 256-neuron hidden layer,
+and a 64-neuron temporal decoder with layer normalisation and dropout regularisation. Produces
+multi-horizon probabilistic forecasts via quantile regression.
+• Naive Model: a simple persistence baseline that repeats the last observed value across the entire
+forecast horizon. This serves as a reference to quantify task difficulty. It is used exclusively for
+forecasting and is not applied to anomaly detection tasks
